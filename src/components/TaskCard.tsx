@@ -62,5 +62,5 @@ const TaskCard = ({ task }: TaskCardProps) => {
 }
 
 export default memo(TaskCard, (prev, next) => {
-    return prev.task.id === next.task.id && prev.task.status === next.task.status
+    return prev.task === next.task
 })
