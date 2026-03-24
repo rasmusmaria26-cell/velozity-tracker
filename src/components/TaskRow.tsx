@@ -3,7 +3,7 @@ import { USERS } from '@/data/mockUsers'
 import { useTaskStore } from '@/store/taskStore'
 import PriorityBadge from './PriorityBadge'
 import DueDateLabel from './DueDateLabel'
-import type { Task } from '@/types'
+import type { Task, Status } from '@/types'
 
 interface TaskRowProps {
     task: Task
@@ -52,7 +52,7 @@ const TaskRow = ({ task, style }: TaskRowProps) => {
             {/* Status dropdown */}
             <select
                 value={task.status}
-                onChange={e => updateTaskStatus(task.id, e.target.value as any)}
+                onChange={e => updateTaskStatus(task.id, e.target.value as Status)}
                 className="w-32 text-xs border border-slate-200 rounded px-2 py-1 
                    bg-white text-slate-600 shrink-0 cursor-pointer"
             >
