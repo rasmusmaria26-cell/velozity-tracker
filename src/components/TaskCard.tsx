@@ -6,24 +6,18 @@ import DueDateLabel from './DueDateLabel'
 
 interface TaskCardProps {
     task: Task
+    getCardProps: (task: Task) => { onPointerDown: (e: React.PointerEvent<HTMLDivElement>) => void }
 }
 
-const TaskCard = ({ task }: TaskCardProps) => {
+const TaskCard = ({ task, getCardProps }: TaskCardProps) => {
     const collabUsers = useCollabStore((s) => s.collabUsers)
     const usersOnThisCard = collabUsers.filter((u) => u.currentTaskId === task.id)
-
-    const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-        if (e.button !== 0 && e.pointerType === 'mouse') return
-
-        // Core drag initialization happens via custom hook generated in Phase 5
-        // For now we just implement the UI and simple pointer intercept hooks
-    }
 
     return (
         <div
             data-task-id={task.id}
-            className="bg-white p-3 rounded-lg border border-slate-200 shadow-sm cursor-grab select-none touch-none hover:border-blue-300 transition-colors"
-            onPointerDown={handlePointerDown}
+            className={`bg-white p-3 rounded-lg border border-slate-200 shadow-sm cursor-grab select-none touch-none hover:border-blue-300 transition-colors`}
+            {...getCardProps(task)}
         >
             <div className="flex flex-col gap-2">
                 <h4 className="text-sm font-medium text-slate-700 leading-snug">
