@@ -51,9 +51,8 @@ export function useDragAndDrop() {
 
         const cleanup = () => {
             const dragState = dragStateRef.current
-            dragState.ghostElement?.remove()
-            dragState.placeholderElement?.remove()
 
+            // Restore opacity before destroying the ghost and placeholder DOM.
             if (dragState.draggedTaskId) {
                 const cardEl = document.querySelector(
                     `[data-task-id="${dragState.draggedTaskId}"]`
@@ -64,6 +63,9 @@ export function useDragAndDrop() {
                     cardEl.style.pointerEvents = ''
                 }
             }
+
+            dragState.placeholderElement?.remove()
+            dragState.ghostElement?.remove()
 
             document.querySelectorAll('[data-column-status]').forEach((el) => {
                 el.classList.remove('bg-blue-50', 'ring-2', 'ring-blue-300')
@@ -96,19 +98,47 @@ export function useDragAndDrop() {
                 }
                 cleanup()
             } else {
-                // snap back
+                // snap back — restore original card immediately so it's
+                // visible when the ghost finishes animating back
+                if (dragState.draggedTaskId) {
+                    const cardEl = document.querySelector(
+                        `[data-task-id="${dragState.draggedTaskId}"]`
+                    ) as HTMLElement | null
+                    if (cardEl) {
+                        cardEl.style.opacity = ''
+                        cardEl.style.pointerEvents = ''
+                    }
+                }
+
                 if (ghostElement && originRect) {
+                    const placeholder = dragState.placeholderElement
+                    let cleanedUp = false
+
+                    const doCleanup = () => {
+                        if (cleanedUp) return
+                        cleanedUp = true
+                        placeholder?.remove()
+                        document.querySelectorAll('[data-placeholder="dnd"]')
+                            .forEach(el => el.remove())
+                        cleanup()
+                    }
+
                     ghostElement.style.transition =
                         'left 0.3s ease, top 0.3s ease, opacity 0.3s ease'
                     ghostElement.style.left = `${originRect.left}px`
                     ghostElement.style.top = `${originRect.top}px`
                     ghostElement.style.opacity = '0'
 
+                    // primary cleanup via transitionend
                     ghostElement.addEventListener(
                         'transitionend',
-                        () => cleanup(),
+                        doCleanup,
                         { once: true }
                     )
+
+                    // fallback in case transitionend never fires
+                    setTimeout(doCleanup, 400)
+
                 } else {
                     cleanup()
                 }
@@ -142,6 +172,7 @@ export function useDragAndDrop() {
                 dragState.sourceColumnStatus = task.status
 
                 const placeholder = document.createElement('div')
+                placeholder.setAttribute('data-placeholder', 'dnd')
                 placeholder.style.height = `${rect.height}px`
                 placeholder.style.border = '2px dashed #94a3b8'
                 placeholder.style.borderRadius = '8px'
