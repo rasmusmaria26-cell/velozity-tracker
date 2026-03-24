@@ -29,4 +29,4 @@ const EmptyState = ({ type, columnLabel, onClearFilters }: EmptyStateProps) => {
     )
 }
 
-export default EmptyState
+export default EmptyState // verified
