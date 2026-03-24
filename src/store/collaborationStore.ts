@@ -1,19 +1,27 @@
 import { create } from 'zustand'
-import type { CollabUser } from '@/types'
 import { COLLAB_USERS } from '@/data/mockUsers'
+import type { CollabUser } from '@/types'
 
-interface CollabStore {
+interface CollabState {
     collabUsers: CollabUser[]
-    moveUser: (userId: string, taskId: string | null) => void
+    updateUserLocation: (userId: string, taskId: string | null) => void
+    moveUserCursor: (userId: string, taskId: string | null, pos?: { x: number, y: number }) => void
 }
 
-export const useCollabStore = create<CollabStore>((set) => ({
+export const useCollabStore = create<CollabState>((set) => ({
     collabUsers: COLLAB_USERS,
 
-    moveUser: (userId, taskId) =>
-        set((s) => ({
-            collabUsers: s.collabUsers.map((u) =>
+    updateUserLocation: (userId, taskId) =>
+        set((state) => ({
+            collabUsers: state.collabUsers.map((u) =>
                 u.id === userId ? { ...u, currentTaskId: taskId } : u
+            ),
+        })),
+
+    moveUserCursor: (userId, taskId, pos) =>
+        set((state) => ({
+            collabUsers: state.collabUsers.map((u) =>
+                u.id === userId ? { ...u, currentTaskId: taskId, cursorPos: pos } : u
             ),
         })),
 }))
