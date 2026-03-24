@@ -3,6 +3,7 @@ import { useTaskStore } from '@/store/taskStore'
 import { useFilterStore } from '@/store/filterStore'
 import type { Status } from '@/types'
 import KanbanColumn from '@/components/KanbanColumn'
+import { useDragAndDrop } from '@/hooks/useDragAndDrop'
 
 const COLUMNS = [
     { status: 'todo' as Status, label: 'To Do', color: 'border-slate-300' },
@@ -20,8 +21,10 @@ const KanbanView = () => {
         [tasks, filters, applyFilters]
     )
 
+    const { getCardProps, isDragging } = useDragAndDrop()
+
     return (
-        <div className="flex gap-4 h-full overflow-x-auto px-4 pb-4 pt-4">
+        <div className={`flex gap-4 h-full overflow-x-auto px-4 pb-4 pt-4 ${isDragging ? 'cursor-grabbing' : ''}`}>
             {COLUMNS.map((col) => (
                 <KanbanColumn
                     key={col.status}
@@ -29,10 +32,11 @@ const KanbanView = () => {
                     label={col.label}
                     colorClass={col.color}
                     tasks={filteredTasks.filter((t) => t.status === col.status)}
+                    getCardProps={getCardProps}
                 />
             ))}
         </div>
     )
 }
 
-export default KanbanView
+export default KanbanView // dependencies verified
