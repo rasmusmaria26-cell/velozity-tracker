@@ -14,7 +14,7 @@ const ASSIGNEE_MAP = Object.fromEntries(USERS.map(u => [u.id, u]))
 
 const TaskRow = ({ task, style }: TaskRowProps) => {
     const updateTaskStatus = useTaskStore(s => s.updateTaskStatus)
-    const assignee = ASSIGNEE_MAP[task.assigneeId!] // mapped per requested logic
+    const assignee = ASSIGNEE_MAP[task.assigneeId]
 
     return (
         <div
