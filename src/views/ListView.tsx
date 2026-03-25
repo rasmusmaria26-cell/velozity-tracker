@@ -67,7 +67,7 @@ const ListView = () => {
                     className="flex-1 text-left hover:text-slate-700 flex items-center">
                     Title <SortArrow col="title" />
                 </button>
-                <span className="w-24 shrink-0">Assignee</span>
+                <span className="w-24 shrink-0 hidden md:flex">Assignee</span>
                 <button onClick={() => handleSort('priority')}
                     className="w-24 text-left shrink-0 hover:text-slate-700 flex items-center">
                     Priority <SortArrow col="priority" />

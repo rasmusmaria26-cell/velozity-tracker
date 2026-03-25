@@ -27,7 +27,7 @@ const TaskRow = ({ task, style }: TaskRowProps) => {
             <span className="flex-1 text-sm text-slate-700 truncate">{task.title}</span>
 
             {/* Assignee */}
-            <div className="w-24 flex items-center gap-1.5 shrink-0">
+            <div className="w-24 flex items-center gap-1.5 shrink-0 hidden md:flex">
                 {assignee ? (
                     <>
                         <div
