@@ -8,7 +8,7 @@ export interface User {
     id: string
     name: string
     initials: string
-    color: string        // tailwind bg class e.g. 'bg-violet-500'
+    color: string        // hex color for inline style
 }
 
 export interface Task {
