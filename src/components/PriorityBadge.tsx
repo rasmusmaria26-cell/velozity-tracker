@@ -1,7 +1,8 @@
+import React, { memo } from 'react'
 import { PRIORITY_BADGE_CLASSES, PRIORITY_BAR_COLORS } from '@/utils/priorityUtils'
 import type { Priority } from '@/types'
 
-export default function PriorityBadge({ priority, compact }: { priority: Priority, compact?: boolean }) {
+function PriorityBadge({ priority, compact }: { priority: Priority, compact?: boolean }) {
     if (compact) {
         return (
             <div
@@ -18,3 +19,5 @@ export default function PriorityBadge({ priority, compact }: { priority: Priorit
         </span>
     )
 }
+
+export default memo(PriorityBadge)

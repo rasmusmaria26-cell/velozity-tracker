@@ -1,3 +1,4 @@
+import React, { memo } from 'react'
 import { formatDueDate } from '@/utils/dateUtils'
 
 const VARIANT_CLASSES = {
@@ -7,7 +8,7 @@ const VARIANT_CLASSES = {
     'overdue-severe': 'text-red-600 font-semibold',
 }
 
-export default function DueDateLabel({ dueDate }: { dueDate: string }) {
+function DueDateLabel({ dueDate }: { dueDate: string }) {
     const { label, variant } = formatDueDate(dueDate)
     return (
         <span className={`text-xs ${VARIANT_CLASSES[variant]}`}>
@@ -15,3 +16,5 @@ export default function DueDateLabel({ dueDate }: { dueDate: string }) {
         </span>
     )
 }
+
+export default memo(DueDateLabel)
