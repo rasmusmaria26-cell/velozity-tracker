@@ -2,7 +2,7 @@
 
 A multi-view project management UI built for a frontend engineering assessment. Features custom drag-and-drop, virtual scrolling, and live collaboration indicators — all built from scratch without UI or interaction libraries.
 
-**Live Demo:** [your-vercel-url-here]
+**Live Demo:** [https://velozity-tracker-two.vercel.app]
 
 ## Setup
 ```bash
