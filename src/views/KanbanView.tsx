@@ -39,4 +39,4 @@ const KanbanView = () => {
     )
 }
 
-export default KanbanView // dependencies verified
+export default KanbanView
