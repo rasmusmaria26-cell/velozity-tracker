@@ -1,73 +1,52 @@
-# React + TypeScript + Vite
+# Velozity Project Tracker
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A high-performance, real-time-simulated task management application built with **React, TypeScript, and Tailwind CSS**. Velozity is designed for scale, featuring zero-dependency drag-and-drop mechanics and virtualized list rendering.
 
-Currently, two official plugins are available:
+## 🚀 Key Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Kanban Board**: Drag-and-drop tasks across statuses with high-frequency pointer tracking.
+- **Virtualized List View**: Smooth performance for 500+ tasks using custom row-offset logic.
+- **Timeline (Gantt) View**: Data-driven schedule visualization with relative date positioning.
+- **Collaboration Simulation**: Simulated multi-user presence with active task indicators.
+- **Advanced Filtering**: Real-time multi-criteria filtering across all project views.
+- **Responsive Design**: Tablet-optimized layout (768px) with toggleable UI elements.
 
-## React Compiler
+## 🛠️ Technical Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Framework**: Vite + React 18+ (TS)
+- **State Management**: Zustand (Atomic updates for sub-millisecond responsiveness)
+- **Styling**: Tailwind CSS (Zero runtime CSS overhead)
+- **Date Utilities**: date-fns
+- **Icons/Avatars**: Custom Initials-based generation
 
-## Expanding the ESLint configuration
+## 🧠 Explanation Field: Architectural Decisions
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 1. Unified State with Zustand
+We opted for **Zustand** over Redux or Context API to handle high-frequency updates (e.g., cursor movements and drag offsets). Its atomic selector pattern ensures that dragging a task card in the Kanban view doesn't trigger unnecessary re-renders in the sidebar or collaboration bars unless explicitly required.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### 2. Zero-Dependency Drag & Drop
+To maintain a small bundle size and eliminate "library lag," we built a custom DnD engine using **Native Pointer Events**.
+- **Mechanics**: On `pointerdown`, we clone the target element into a "ghost" container, calculate the viewport offset, and track movement on `document`.
+- **Performance**: We use `translate3d` for hardware acceleration and `memo` on task cards to ensure 60fps movement even on lower-end devices.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### 3. High-Efficiency virtualization
+The List View utilizes a custom **`useVirtualScroll`** hook. Instead of rendering 500+ DOM nodes, we only render the tasks currently visible in the viewport plus a small buffer. This keeps the DOM tree shallow, significantly improving memory usage and scroll responsiveness.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### 4. Responsive Resilience
+The app utilizes a "mobile-at-heart, desktop-by-design" approach. Using Tailwind's breakpoint system, we hide complex filter panels behind a toggle on tablet/mobile viewports (`md` breakpoint), ensuring the primary productivity tools (cards and lists) have maximum screen real estate.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 📦 Getting Started
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+1. **Install Dependencies**: `npm install`
+2. **Development**: `npm run dev`
+3. **Build**: `npm run build`
+4. **Lint**: `npm run lint`
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 📁 Project Structure
+
+- `src/store`: Zustand store definitions.
+- `src/components`: Reusable UI components.
+- `src/views`: Primary application layouts (Kanban, List, Timeline).
+- `src/hooks`: Custom performance logic (DnD, Virtualization).
+- `src/utils`: Date processing and priority mapping.
+
