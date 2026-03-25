@@ -1,6 +1,7 @@
 import React, { memo } from 'react'
 import type { Task } from '@/types'
 import { useCollabStore } from '@/store/collaborationStore'
+import { USERS } from '@/data/mockUsers'
 import PriorityBadge from './PriorityBadge'
 import DueDateLabel from './DueDateLabel'
 
@@ -12,6 +13,7 @@ interface TaskCardProps {
 const TaskCard = ({ task, getCardProps }: TaskCardProps) => {
     const collabUsers = useCollabStore((s) => s.collabUsers)
     const usersOnThisCard = collabUsers.filter((u) => u.currentTaskId === task.id)
+    const assignee = USERS.find(u => u.id === task.assigneeId)
 
     return (
         <div
@@ -23,6 +25,19 @@ const TaskCard = ({ task, getCardProps }: TaskCardProps) => {
                 <h4 className="text-sm font-medium text-slate-700 leading-snug">
                     {task.title}
                 </h4>
+
+                <div className="flex items-center gap-1.5">
+                    <div
+                        className="w-5 h-5 rounded-full flex items-center justify-center 
+                 text-white text-[9px] font-bold shrink-0"
+                        style={{ backgroundColor: assignee?.color ?? '#94a3b8' }}
+                    >
+                        {assignee?.initials ?? '?'}
+                    </div>
+                    <span className="text-xs text-slate-400 truncate">
+                        {assignee?.name.split(' ')[0] ?? 'Unknown'}
+                    </span>
+                </div>
 
                 <div className="flex items-center justify-between mt-1">
                     <div className="flex items-center gap-2 relative z-10 pointer-events-none">
