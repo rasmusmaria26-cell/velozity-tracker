@@ -1,52 +1,32 @@
-# Velozity Project Tracker
+# Velozity Tracker
 
-A high-performance, real-time-simulated task management application built with **React, TypeScript, and Tailwind CSS**. Velozity is designed for scale, featuring zero-dependency drag-and-drop mechanics and virtualized list rendering.
+A multi-view project management UI built for a frontend engineering assessment. Features custom drag-and-drop, virtual scrolling, and live collaboration indicators — all built from scratch without UI or interaction libraries.
 
-## 🚀 Key Features
+**Live Demo:** [your-vercel-url-here]
 
-- **Kanban Board**: Drag-and-drop tasks across statuses with high-frequency pointer tracking.
-- **Virtualized List View**: Smooth performance for 500+ tasks using custom row-offset logic.
-- **Timeline (Gantt) View**: Data-driven schedule visualization with relative date positioning.
-- **Collaboration Simulation**: Simulated multi-user presence with active task indicators.
-- **Advanced Filtering**: Real-time multi-criteria filtering across all project views.
-- **Responsive Design**: Tablet-optimized layout (768px) with toggleable UI elements.
+## Setup
+```bash
+git clone https://github.com/rasmusmaria26-cell/velozity-tracker.git
+cd velozity-tracker
+npm install
+npm run dev
+```
 
-## 🛠️ Technical Stack
+Open http://localhost:5173
 
-- **Framework**: Vite + React 18+ (TS)
-- **State Management**: Zustand (Atomic updates for sub-millisecond responsiveness)
-- **Styling**: Tailwind CSS (Zero runtime CSS overhead)
-- **Date Utilities**: date-fns
-- **Icons/Avatars**: Custom Initials-based generation
+## State Management — Why Zustand
 
-## 🧠 Explanation Field: Architectural Decisions
+Zustand was chosen over Context+useReducer for two main reasons. First, Zustand lets each component subscribe to only the slice of state it needs — a KanbanColumn re-renders only when its specific task subset changes, not when an unrelated filter or collaboration update fires. With 500 tasks across four columns, this matters. React Context would re-render every consumer on any state change, which quickly causes visible lag at this data scale. Second, Zustand has no Provider boilerplate or dispatch/action overhead, which keeps the four store files straightforward to read and extend.
 
-### 1. Unified State with Zustand
-We opted for **Zustand** over Redux or Context API to handle high-frequency updates (e.g., cursor movements and drag offsets). Its atomic selector pattern ensures that dragging a task card in the Kanban view doesn't trigger unnecessary re-renders in the sidebar or collaboration bars unless explicitly required.
+## Virtual Scrolling
 
-### 2. Zero-Dependency Drag & Drop
-To maintain a small bundle size and eliminate "library lag," we built a custom DnD engine using **Native Pointer Events**.
-- **Mechanics**: On `pointerdown`, we clone the target element into a "ghost" container, calculate the viewport offset, and track movement on `document`.
-- **Performance**: We use `translate3d` for hardware acceleration and `memo` on task cards to ensure 60fps movement even on lower-end devices.
+The custom `useVirtualScroll` hook keeps the DOM shallow regardless of dataset size. A single spacer div is sized at `totalCount × rowHeight` so the browser scrollbar reflects the full 500-task list. Only the rows visible in the viewport, plus a 5-row buffer above and below, are actually rendered — each absolutely positioned at `index × rowHeight` inside the spacer. On scroll, `scrollTop` updates synchronously and new start/end indices are recalculated immediately. The buffer prevents blank flashes on fast scroll by keeping rows slightly ahead of the viewport edge.
 
-### 3. High-Efficiency virtualization
-The List View utilizes a custom **`useVirtualScroll`** hook. Instead of rendering 500+ DOM nodes, we only render the tasks currently visible in the viewport plus a small buffer. This keeps the DOM tree shallow, significantly improving memory usage and scroll responsiveness.
+## Drag and Drop
 
-### 4. Responsive Resilience
-The app utilizes a "mobile-at-heart, desktop-by-design" approach. Using Tailwind's breakpoint system, we hide complex filter panels behind a toggle on tablet/mobile viewports (`md` breakpoint), ensuring the primary productivity tools (cards and lists) have maximum screen real estate.
+Built entirely with the Pointer Events API — no libraries. On drag start, the card is hidden with `opacity: 0` and a same-height dashed placeholder div is inserted in its place to prevent column layout shift. A cloned ghost element is appended to `document.body`, escaping column `overflow: hidden`, and tracks the cursor position. `setPointerCapture` ensures `pointermove` keeps firing even when the pointer moves faster than the browser's hit-testing. Drop targets are identified by `data-column-status` attributes via `elementFromPoint`. On an invalid drop, the ghost transitions back to its `originRect`; a `setTimeout` fallback handles the edge case where `transitionend` does not fire.
 
-## 📦 Getting Started
+## Lighthouse Score
 
-1. **Install Dependencies**: `npm install`
-2. **Development**: `npm run dev`
-3. **Build**: `npm run build`
-4. **Lint**: `npm run lint`
-
-## 📁 Project Structure
-
-- `src/store`: Zustand store definitions.
-- `src/components`: Reusable UI components.
-- `src/views`: Primary application layouts (Kanban, List, Timeline).
-- `src/hooks`: Custom performance logic (DnD, Virtualization).
-- `src/utils`: Date processing and priority mapping.
+![Lighthouse Performance Score](./lighthouse.png)
 
