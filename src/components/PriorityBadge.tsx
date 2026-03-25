@@ -1,4 +1,4 @@
-import React, { memo } from 'react'
+import { memo } from 'react'
 import { PRIORITY_BADGE_CLASSES, PRIORITY_BAR_COLORS } from '@/utils/priorityUtils'
 import type { Priority } from '@/types'
 

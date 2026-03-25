@@ -80,7 +80,7 @@ export function useDragAndDrop() {
             setIsDragging(false)
         }
 
-        const handlePointerUp = (e: PointerEvent) => {
+        const handlePointerUp = (_e: PointerEvent) => {
             const dragState = dragStateRef.current
             if (!dragState.isDragging) return
 

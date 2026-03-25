@@ -1,4 +1,4 @@
-import React, { memo } from 'react'
+import { memo } from 'react'
 import { formatDueDate } from '@/utils/dateUtils'
 
 const VARIANT_CLASSES = {
